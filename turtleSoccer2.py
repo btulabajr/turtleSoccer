@@ -5,7 +5,7 @@
 import turtle
 import os
 
-#turtle.clearscreen()
+turtle.clearscreen()
 
 field = turtle.Screen()
 field.bgpic("field.gif")
@@ -15,22 +15,22 @@ field.tracer(0)
 score_a = 0
 score_b = 0
 
-# Team A
-# for player in range(3):
-#     playerA(player) = turtle.Turtle()
-#     playerA(player).speed(0)
-#     playerA(player).shape("circle")
-#     playerA(player).color("white")
-#     playerA(player).shapesize(st)
-A1 = turtle.Turtle()
-A1.speed(0)
-A1.shape("square")
-A1.color("white")
-A1.shapesize(stretch_wid=5,stretch_len=1)
-A1.penup()
-A1.goto(-350, 0)
+A = []
 
-# Paddle B
+# Team A
+for index in range(3):
+    A.append(turtle.Turtle())
+    A[index].speed(0)
+    A[index].shape("circle")
+    A[index].color("red")
+    A[index].shapesize(stretch_wid=2.5,stretch_len=2.5)
+    A[index].penup()
+    if index == 1:
+        A[index].goto(-200, 0)
+    else:
+        A[index].goto(-300, (-200 + index*200))
+
+# Team B
 B1 = turtle.Turtle()
 B1.speed(0)
 B1.shape("square")
@@ -44,7 +44,6 @@ image = "ball.gif"
 field.addshape(image)
 turtle.shape(image)
 turtle.penup()
-
 turtle.setx(0)
 turtle.sety(0)
 turtle.dx = 0.2
@@ -62,14 +61,14 @@ pen.write("Player A: 0  Player B: 0", align="center", font=("Courier", 24, "norm
 
 # Functions
 def A1_up():
-    y = A1.ycor()
+    y = A[1].ycor()
     y += 20
-    A1.sety(y)
+    A[1].sety(y)
 
 def A1_down():
-    y = A1.ycor()
+    y = A[1].ycor()
     y -= 20
-    A1.sety(y)
+    A[1].sety(y)
 
 def B1_up():
     y = B1.ycor()
@@ -89,7 +88,7 @@ field.onkeypress(B1_up, "Up")
 field.onkeypress(B1_down, "Down")
 
 # Main game loop
-while True:
+while scoreA < 5 and scoreB < 5:
     field.update()
     
     # Move the ball
@@ -125,7 +124,7 @@ while True:
         turtle.dx *= -1
 
     # Paddle and ball collisions
-    if turtle.xcor() < -340 and turtle.ycor() < A1.ycor() + 50 and turtle.ycor() > A1.ycor() - 50:
+    if turtle.xcor() < -340 and turtle.ycor() < A[1].ycor() + 50 and turtle.ycor() > A[1].ycor() - 50:
         turtle.dx *= -1 
         os.system("afplay bounce.wav&")
     
