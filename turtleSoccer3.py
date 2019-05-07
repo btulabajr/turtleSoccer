@@ -140,7 +140,7 @@ while True:
         os.system("afplay bounce.wav&")
 
     # Left and right
-    if turtle.xcor() > 350:
+    if turtle.xcor() > 500:
         score_a += 1
         pen.clear()
         pen.write("Player A: {}  Player B: {}".format(score_a, score_b), align="center", font=("Courier", 24, "normal"))
@@ -149,7 +149,7 @@ while True:
         turtle.goto(0, 0)
         turtle.dx *= -1
 
-    elif turtle.xcor() < -350:
+    elif turtle.xcor() < -500:
         score_b += 1
         pen.clear()
         pen.write("Player A: {}  Player B: {}".format(score_a, score_b), align="center", font=("Courier", 24, "normal"))
