@@ -128,7 +128,7 @@ while scoreA < 3 and scoreB < 3:
     if 'k' in keyList: B[bi].sety( B[bi].ycor() - turtleSpeed )
     if 'l' in keyList: B[bi].setx( B[bi].xcor() + turtleSpeed )
 
-    # Goal score condition
+    # Goal score condition (can move this to border checking to be cleaner)
     if abs(ball.xcor()) > (X - 25) and abs(ball.ycor()) < 150:
         if ball.xcor() > 0: scoreA += 1
         else: scoreB += 1
@@ -137,9 +137,9 @@ while scoreA < 3 and scoreB < 3:
         ball.goto(0, 0)
         ball.dx *= -1
 
-    # Move the ball
+    # Move the ball (eventually implement slowdown too)
     ball.setx(ball.xcor() + ball.dx)
     ball.sety(ball.ycor() + ball.dy)
 
-    # Bording checking
+    # Border checking
     #for objects in allTurtles:
