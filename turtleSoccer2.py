@@ -4,12 +4,12 @@
 
 import turtle
 from pynput import keyboard
+import sys
 
 # This list will hold all currently-pressed keyboard inputs
 keyList = list()
 error = 'This game accepts alphanumerical keys, namely qweasd and uiojkl.'
 # Initialize player select indices
-# global ai, bi
 ai, bi = 1, 1
 
 def on_press(key):
@@ -24,6 +24,7 @@ def on_release(key):
     try:
         if key.char in keyList:
             keyList.remove(key.char)
+            # Button change rather than continuous
             if key.char == 'q': ai = playerIncrement(ai, -1)
             if key.char == 'e': ai = playerIncrement(ai, 1)
             if key.char == 'u': bi = playerIncrement(bi, -1)
@@ -35,18 +36,13 @@ def on_release(key):
 listener = keyboard.Listener(on_press=on_press, on_release=on_release)
 listener.start()
 
-oldKeyList = keyList
-
-# Non-blocking keyboard listener
-# with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
-#     listener.join()
-
-
-
+# Field
 turtle.clearscreen()
 field = turtle.Screen()
 field.bgpic("field.gif")
 field.tracer(0)
+# Graphic is 1200 x 800 pixels centered around 0,0
+X, Y = 600, 400
 
 # Team A
 A = []
@@ -58,9 +54,9 @@ for index in range(3):
     A[index].shape(playerA)
     A[index].penup()
     if index == 1:
-        A[index].goto(-200, 0)
+        A[index].goto(-X*0.3, 0)
     else:
-        A[index].goto(-300, (-200 + index*200))
+        A[index].goto(-X*0.5, (-Y*0.5 + index*Y*0.5))
 
 # Team B
 B = []
@@ -72,9 +68,9 @@ for index in range(3):
     B[index].shape(playerB)
     B[index].penup()
     if index == 1:
-        B[index].goto(200, 0)
+        B[index].goto(X*0.3, 0)
     else:
-        B[index].goto(300, (-200 + index*200))
+        B[index].goto(X*0.5, (-Y*0.5 + index*Y*0.5))
 
 # Ball
 ball = turtle.Turtle()
@@ -85,8 +81,8 @@ ball.shape(image)
 ball.penup()
 ball.setx(0)
 ball.sety(0)
-ball.dx = 0.2
-ball.dy = 0.2
+ball.dx = 0.5
+ball.dy = 0
 
 # Pen
 pen = turtle.Turtle()
@@ -98,6 +94,7 @@ pen.hideturtle()
 pen.goto(0, 260)
 pen.write("Player A: 0  Player B: 0", align="center", font=("Courier", 24, "normal"))
 
+# Selects player on either team in specified direction
 def playerIncrement(player, direction):
     global ai, bi
     player += direction
@@ -105,105 +102,44 @@ def playerIncrement(player, direction):
     elif player > 2: player = 0
     return player
 
-
 # Generic turtle movement speed
 turtleSpeed = 1
 # Score counters
-scoreA = scoreB = 0
+scoreA, scoreB = 0, 0
+
+allTurtles = A + B
+allTurtles.append(ball)
 
 # Main game loop
 while scoreA < 3 and scoreB < 3:
     # if len(keyList) > 0: print(keyList)
-    print(ai, bi)
+    # print(ai, bi)
     field.update()
 
-    # Move player A
+    # Move player A, diagonal is possible
     if 'w' in keyList: A[ai].sety( A[ai].ycor() + turtleSpeed )
     if 'a' in keyList: A[ai].setx( A[ai].xcor() - turtleSpeed )
     if 's' in keyList: A[ai].sety( A[ai].ycor() - turtleSpeed )
     if 'd' in keyList: A[ai].setx( A[ai].xcor() + turtleSpeed )
 
-    # Move player B
+    # Move player B, diagonal is possible
     if 'i' in keyList: B[bi].sety( B[bi].ycor() + turtleSpeed )
     if 'j' in keyList: B[bi].setx( B[bi].xcor() - turtleSpeed )
     if 'k' in keyList: B[bi].sety( B[bi].ycor() - turtleSpeed )
     if 'l' in keyList: B[bi].setx( B[bi].xcor() + turtleSpeed )
-    
-    # if 'q' in oldKeyList:
-    #     if 'q' not in keyList:
-    #         print('yeet!')
-    # if key == 'q': ai = playerIncrement(ai, -1)
-    # if key == 'e': ai = playerIncrement(ai, 1)
-    # if key == 'u': bi = playerIncrement(bi, -1)
-    # if key == 'o': bi = playerIncrement(bi, 1)
 
-    oldKeyList = keyList
-    # Change player selection
-    # if 'q' in keyList: ai -= 1
-    # if 'e' in keyList: ai += 1
-    # if 'u' in keyList: bi -= 1
-    # if 'o' in keyList: bi += 1
-    # if 'q' in oldKeyList and 'q' not in keyList:
-    #     if ai > 0: ai -= 1
-    #     else: ai = 2 
-    # if key == 'e':
-    #     if ai < 2: ai += 1
-    #     else: ai = 0
-    # if key == 'u':
-    #     if bi > 0: bi -= 1
-    #     else: bi = 2 
-    # if key == 'o':
-    #     if bi < 2: bi += 1
-    #     else: bi = 0
-    # if ai < 0: ai = 0
-    # elif ai > 2: ai = 2
-    # if bi < 0: bi = 0
-    # elif bi > 2: bi = 2
+    # Goal score condition
+    if abs(ball.xcor()) > (X - 25) and abs(ball.ycor()) < 150:
+        if ball.xcor() > 0: scoreA += 1
+        else: scoreB += 1
+        pen.clear()
+        pen.write("Player A: {}  Player B: {}".format(scoreA, scoreB), align="center", font=("Courier", 24, "normal"))
+        ball.goto(0, 0)
+        ball.dx *= -1
 
+    # Move the ball
+    ball.setx(ball.xcor() + ball.dx)
+    ball.sety(ball.ycor() + ball.dy)
 
-# Movement Functions
-
-
-
-    
-#     # Move the ball
-#     ball.setx(ball.xcor() + ball.dx)
-#     ball.sety(ball.ycor() + ball.dy)
-
-
-#     # Border checking
-
-#     # Top and bottom
-#     if turtle.ycor() > 290:
-#         turtle.sety(290)
-#         turtle.dy *= -1
-#         os.system("afplay bounce.wav&")
-    
-#     elif turtle.ycor() < -290:
-#         turtle.sety(-290)
-#         turtle.dy *= -1
-#         os.system("afplay bounce.wav&")
-
-#     # Left and right
-#     if turtle.xcor() > 350:
-#         score_a += 1
-#         pen.clear()
-#         pen.write("Player A: {}  Player B: {}".format(score_a, score_b), align="center", font=("Courier", 24, "normal"))
-#         turtle.goto(0, 0)
-#         turtle.dx *= -1
-
-#     elif turtle.xcor() < -350:
-#         score_b += 1
-#         pen.clear()
-#         pen.write("Player A: {}  Player B: {}".format(score_a, score_b), align="center", font=("Courier", 24, "normal"))
-#         turtle.goto(0, 0)
-#         turtle.dx *= -1
-
-#     # Paddle and ball collisions
-#     if turtle.xcor() < -340 and turtle.ycor() < A[1].ycor() + 50 and turtle.ycor() > A[1].ycor() - 50:
-#         turtle.dx *= -1 
-#         os.system("afplay bounce.wav&")
-    
-#     elif turtle.xcor() > 340 and turtle.ycor() < B1.ycor() + 50 and turtle.ycor() > B1.ycor() - 50:
-#         turtle.dx *= -1
-#         os.system("afplay bounce.wav&")
+    # Bording checking
+    #for objects in allTurtles:
