@@ -108,13 +108,13 @@ def playerIncrement(player, direction):
 
 # Generic turtle movement speed
 turtleSpeed = 1
-# Score counters
+# Score indexs
 scoreA, scoreB = 0, 0
 
 allTurtles = A + B
 allTurtles.append(ball)
 
-collisionCounter = 0
+collisionIndex = 0
 
 # Main game loop
 while scoreA < 5 and scoreB < 5:
@@ -135,8 +135,19 @@ while scoreA < 5 and scoreB < 5:
 
     # Reset ball to middle if spacebar is hit (Foos!)
     if 'g' in keyList:
+        for index in range(3):
+            if index == 1:
+                A[index].goto(-X*0.3, 0)
+                B[index].goto(X*0.3, 0)
+            else:
+                A[index].goto(-X*0.5, (-Y*0.5 + index*Y*0.5))
+                B[index].goto(X*0.5, (-Y*0.5 + index*Y*0.5))
         ball.goto(0, 0)
         ball.speed = 0
+
+    # Get ball position before entering this enormous for loop
+    xBall = ball.xcor()
+    yBall = ball.ycor()
 
     # Border checking
     for index in range(7):
@@ -154,31 +165,35 @@ while scoreA < 5 and scoreB < 5:
             # Last one is the ball
             else: ball.dy *= -1
         
-        # Keep players and ball between sidelines
+        # Keep players and ball between sidelines, also monitor goals
         if abs(xPos) > X-R:
+            # Look at players
             if index < 6:
                 if xPos > 0: xSet = X-R
                 else: xSet = -(X-R)
                 allTurtles[index].setx(xSet)
+            # Look at ball
             else:
+                # If goal is scored
                 if abs(yPos) < 150:
-                    if yPos > 0: scoreA += 1
+                    if yPos < 0: scoreA += 1
                     else: scoreB += 1
                     ball.goto(0, 0)
                     ball.speed = 0
                     pen.clear()
+                    # Update score
                     pen.write("Player A: {}  Player B: {}".format(scoreA, scoreB), align="center", font=("Courier", 24, "normal"))
                     ai, bi = 1, 1
-                    index = 0
-                    for counter in range(3):
-                        if counter == 1:
-                            A[counter].goto(-X*0.3, 0)
-                            B[counter].goto(X*0.3, 0)
+                    for index in range(3):
+                        if index == 1:
+                            A[index].goto(-X*0.3, 0)
+                            B[index].goto(X*0.3, 0)
                         else:
-                            A[counter].goto(-X*0.5, (-Y*0.5 + counter*Y*0.5))
-                            B[counter].goto(X*0.5, (-Y*0.5 + counter*Y*0.5))
+                            A[index].goto(-X*0.5, (-Y*0.5 + index*Y*0.5))
+                            B[index].goto(X*0.5, (-Y*0.5 + index*Y*0.5))
                 else: ball.dx *= -1
 
+        # These variables are the scale of the goal box on the field graphic
         xMult = 0.63
         yMult = 0.59
         offset = 10
@@ -197,34 +212,34 @@ while scoreA < 5 and scoreB < 5:
                     else: xSet = -(X*xMult)
                 else: xSet = xPos
                 allTurtles[index].goto(xSet, ySet)
+
             # Handle collisions between players and ball
-            xBall = ball.xcor()
-            yBall = ball.ycor()
             if allTurtles[index].distance(ball) < 2*R:
                 # Give ball max speed
                 ball.speed = 2
-                # Reset collision counter for ball slowdown
-                collisionCounter = 0
+                # Reset collision index for ball slowdown
+                collisionIndex = 0
                 xPlayer = allTurtles[index].xcor()
                 yPlayer = allTurtles[index].ycor()
-                # Get vector between player and ball
+                # Get x and y distance between player and ball
                 xDiff = xBall - xPlayer
                 yDiff = yBall - yPlayer
                 # Get angle between player and ball in radians
                 contactAngle = math.atan2(yDiff, xDiff)
-                # previousAngle = math.atan2(dy, dx)
-                # diffAngle = previousAngle - contactAngle
+                # Set ball speed based off this contact angle
                 ball.dx = ball.speed*math.sin(contactAngle)
                 ball.dy = ball.speed*math.cos(contactAngle)
             else:
+                # Implement slow down if no collision
                 previousAngle = math.atan2(ball.dy, ball.dx)
                 ball.dx = ball.speed*math.sin(previousAngle)
                 ball.dy = ball.speed*math.cos(previousAngle)
 
-    collisionCounter += 1
+    # Update collision
+    collisionIndex += 1
     # Start to slow down 
-    if collisionCounter > 100 and ball.speed > 0.5:
-        ball.speed -= 0.004
+    if collisionIndex > 100 and ball.speed > 0.4:
+        ball.speed -= 0.005
 
     # Move the ball (eventually implement slowdown too)
     ball.setx(ball.xcor() + ball.dx)
