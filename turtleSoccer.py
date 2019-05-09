@@ -8,7 +8,6 @@ import math
 
 # This list will hold all currently-pressed keyboard inputs
 keyList = list()
-# Error is commented out to make the .exe
 error = 'This game accepts alphanumerical keys, namely qweasd and uiojkl.'
 
 # When keys are pressed
