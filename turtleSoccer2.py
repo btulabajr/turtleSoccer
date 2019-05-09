@@ -4,13 +4,11 @@
 
 import turtle
 from pynput import keyboard
-import sys
+import math
 
 # This list will hold all currently-pressed keyboard inputs
 keyList = list()
 error = 'This game accepts alphanumerical keys, namely qweasd and uiojkl.'
-# Initialize player select indices
-ai, bi = 1, 1
 
 def on_press(key):
     try:
@@ -43,13 +41,15 @@ field.bgpic("field.gif")
 field.tracer(0)
 # Graphic is 1200 x 800 pixels centered around 0,0
 X, Y = 600, 400
+# Radius of ball and players
+R = 25
 
 # Team A
 A = []
 for index in range(3):
     A.append(turtle.Turtle())
     A[index].speed(0)
-    playerA = "box-turtle.gif"
+    playerA = "red.gif"
     field.addshape(playerA)
     A[index].shape(playerA)
     A[index].penup()
@@ -63,7 +63,7 @@ B = []
 for index in range(3):
     B.append(turtle.Turtle())
     B[index].speed(0)
-    playerB = "sea-turtle.gif"
+    playerB = "blue.gif"
     field.addshape(playerB)
     B[index].shape(playerB)
     B[index].penup()
@@ -81,8 +81,9 @@ ball.shape(image)
 ball.penup()
 ball.setx(0)
 ball.sety(0)
-ball.dx = 0.5
-ball.dy = 0
+# Motor vector speed variables
+ball.dx, ball.dy = 0, 0
+ball.speed = 0
 
 # Pen
 pen = turtle.Turtle()
@@ -93,6 +94,9 @@ pen.penup()
 pen.hideturtle()
 pen.goto(0, 260)
 pen.write("Player A: 0  Player B: 0", align="center", font=("Courier", 24, "normal"))
+
+# Initialize player select indices
+ai, bi = 1, 1
 
 # Selects player on either team in specified direction
 def playerIncrement(player, direction):
@@ -110,10 +114,11 @@ scoreA, scoreB = 0, 0
 allTurtles = A + B
 allTurtles.append(ball)
 
+collisionCounter = 0
+
 # Main game loop
-while scoreA < 3 and scoreB < 3:
-    # if len(keyList) > 0: print(keyList)
-    # print(ai, bi)
+while scoreA < 5 and scoreB < 5:
+    # Make sure all objects update every cycle
     field.update()
 
     # Move player A, diagonal is possible
@@ -128,18 +133,99 @@ while scoreA < 3 and scoreB < 3:
     if 'k' in keyList: B[bi].sety( B[bi].ycor() - turtleSpeed )
     if 'l' in keyList: B[bi].setx( B[bi].xcor() + turtleSpeed )
 
-    # Goal score condition (can move this to border checking to be cleaner)
-    if abs(ball.xcor()) > (X - 25) and abs(ball.ycor()) < 150:
-        if ball.xcor() > 0: scoreA += 1
-        else: scoreB += 1
-        pen.clear()
-        pen.write("Player A: {}  Player B: {}".format(scoreA, scoreB), align="center", font=("Courier", 24, "normal"))
+    # Reset ball to middle if spacebar is hit (Foos!)
+    if 'g' in keyList:
         ball.goto(0, 0)
-        ball.dx *= -1
+        ball.speed = 0
+
+    # Border checking
+    for index in range(7):
+        # Get position of current turtle
+        yPos = allTurtles[index].ycor()
+        xPos = allTurtles[index].xcor()
+        
+        # Keep players and ball between sidelines
+        if abs(yPos) > Y-R:
+            # First six objects are turtle players
+            if index < 6:
+                if yPos > 0: ySet = Y-R
+                else: ySet = -(Y-R)
+                allTurtles[index].sety(ySet)
+            # Last one is the ball
+            else: ball.dy *= -1
+        
+        # Keep players and ball between sidelines
+        if abs(xPos) > X-R:
+            if index < 6:
+                if xPos > 0: xSet = X-R
+                else: xSet = -(X-R)
+                allTurtles[index].setx(xSet)
+            else:
+                if abs(yPos) < 150:
+                    if yPos > 0: scoreA += 1
+                    else: scoreB += 1
+                    ball.goto(0, 0)
+                    ball.speed = 0
+                    pen.clear()
+                    pen.write("Player A: {}  Player B: {}".format(scoreA, scoreB), align="center", font=("Courier", 24, "normal"))
+                    ai, bi = 1, 1
+                    index = 0
+                    for counter in range(3):
+                        if counter == 1:
+                            A[counter].goto(-X*0.3, 0)
+                            B[counter].goto(X*0.3, 0)
+                        else:
+                            A[counter].goto(-X*0.5, (-Y*0.5 + counter*Y*0.5))
+                            B[counter].goto(X*0.5, (-Y*0.5 + counter*Y*0.5))
+                else: ball.dx *= -1
+
+        xMult = 0.63
+        yMult = 0.59
+        offset = 10
+        # Just look at players for the following functions
+        if index < 6:
+            # Keep players outside of goal box
+            if abs(xPos) > X*xMult and abs(yPos) < Y*yMult:
+                # If within back end of goal box, move to side
+                if abs(xPos) > X*xMult + offset:
+                    if yPos > 0: ySet = Y*yMult
+                    else: ySet = -(Y*yMult)
+                else: ySet = yPos
+                # If within middle section of goal box, move to front
+                if abs(yPos) < Y*yMult - offset:
+                    if xPos > 0: xSet = X*xMult
+                    else: xSet = -(X*xMult)
+                else: xSet = xPos
+                allTurtles[index].goto(xSet, ySet)
+            # Handle collisions between players and ball
+            xBall = ball.xcor()
+            yBall = ball.ycor()
+            if allTurtles[index].distance(ball) < 2*R:
+                # Give ball max speed
+                ball.speed = 2
+                # Reset collision counter for ball slowdown
+                collisionCounter = 0
+                xPlayer = allTurtles[index].xcor()
+                yPlayer = allTurtles[index].ycor()
+                # Get vector between player and ball
+                xDiff = xBall - xPlayer
+                yDiff = yBall - yPlayer
+                # Get angle between player and ball in radians
+                contactAngle = math.atan2(yDiff, xDiff)
+                # previousAngle = math.atan2(dy, dx)
+                # diffAngle = previousAngle - contactAngle
+                ball.dx = ball.speed*math.sin(contactAngle)
+                ball.dy = ball.speed*math.cos(contactAngle)
+            else:
+                previousAngle = math.atan2(ball.dy, ball.dx)
+                ball.dx = ball.speed*math.sin(previousAngle)
+                ball.dy = ball.speed*math.cos(previousAngle)
+
+    collisionCounter += 1
+    # Start to slow down 
+    if collisionCounter > 100 and ball.speed > 0.5:
+        ball.speed -= 0.004
 
     # Move the ball (eventually implement slowdown too)
     ball.setx(ball.xcor() + ball.dx)
     ball.sety(ball.ycor() + ball.dy)
-
-    # Border checking
-    #for objects in allTurtles:
