@@ -45,7 +45,7 @@ listener.start()
 # Field
 turtle.clearscreen()
 field = turtle.Screen()
-field.bgpic("field.gif")
+field.bgpic("images/field.gif")
 field.tracer(0)
 # Graphic is 1200 x 800 pixels centered around 0,0
 # Scale: 10 pixels = 1 meter
@@ -66,7 +66,7 @@ A = []
 for index in range(3):
     A.append(turtle.Turtle())
     A[index].speed(0)
-    playerA = "playerA.gif"
+    playerA = "images/playerA.gif"
     field.addshape(playerA)
     A[index].shape(playerA)
     # Make sure players don't have tracking line
@@ -82,7 +82,7 @@ B = []
 for index in range(3):
     B.append(turtle.Turtle())
     B[index].speed(0)
-    playerB = "playerB.gif"
+    playerB = "images/playerB.gif"
     field.addshape(playerB)
     B[index].shape(playerB)
     B[index].penup()
@@ -94,7 +94,7 @@ for index in range(3):
 # Ball
 ball = turtle.Turtle()
 ball.speed(0)
-image = "ball.gif"
+image = "images/ball.gif"
 field.addshape(image)
 ball.shape(image)
 ball.penup()
