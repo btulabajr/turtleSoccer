@@ -17,7 +17,7 @@
 	Download the zip and extract the files. Run turtleSoccer.py.
 
 	On Windows? Use this:
-		************************************************REPLACE WITH LINK**********************************************************
+		************************************************REPLACE WITH LINK*************************************************
 
 ## How to Play
 
@@ -43,10 +43,12 @@
 		Reverse Selection Order: Turtle #2 --> Turtle #2 --> Turtle #1 --> Turtle #2 --> and so on...
 
 	Goal of the Game:
-		Well, it's soccer. Try to score goals and defend your own goal. Switch between turtles to chase the ball, fall back, or place turtles in strategic positions.
+		Well, it's soccer. Try to score goals and defend your own goal. Switch between turtles to chase the ball, fall back,
+		or place turtles in strategic positions.
 
 	Goaltending Prevention:
-		Turtles are NOT ALLOWED in the goalie box. This prevents players from lining up all your turtles in front of our goal to defend it.
+		Turtles are NOT ALLOWED in the goalie box. This prevents players from lining up all your turtles in front of our goal
+		to defend it.
 
 	End of game:
 		The game ends when one Player scores three goals.
