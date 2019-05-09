@@ -21,7 +21,7 @@
 
 ## How to Play
 
-	Red Player Keyboard Commands:
+	Orange (Netherlands) Player Keyboard Commands:
 		"W" - Up
 		"S" - Down
 		"A" - Left
@@ -29,7 +29,7 @@
 		"E" - Switch to next turtle in forward selection order (see below)
 		"Q" - Switch to next turtle in reverse selection order (see below)
 
-	Blue Player Keyboard Commands:
+	Blue (France) Player Keyboard Commands:
 		"I" - Up
 		"K" - Down
 		"J" - Left
@@ -47,7 +47,7 @@
 		or place turtles in strategic positions.
 
 	Goaltending Prevention:
-		Turtles are NOT ALLOWED in the goalie box. This prevents players from lining up all your turtles in front of our goal
+		Turtles are NOT ALLOWED in the goal box. This prevents players from lining up all your turtles in front of our goal
 		to defend it.
 
 	End of game:
