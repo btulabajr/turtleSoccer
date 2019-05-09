@@ -106,22 +106,21 @@ ball.minSpeed, ball.maxSpeed = 0.5, 3
 
 # Pen
 # Used to keep track of score
-font = ("Courier", 72, "bold")
+font = ("Courier", 100, "bold")
 pen = turtle.Turtle()
-pen.speed(0)
 pen.shape("square")
 # Initialize team A score
 pen.color("orange")
 pen.penup()
 pen.hideturtle()
-pen.goto(-X*0.5, Y*0.75)
-pen.write("0", font=font)
+pen.goto(-X*0.5, Y*0.7)
+pen.write("0", align = "center", font=font)
 # Initialize team B score
 pen.color("blue")
 pen.penup()
 pen.hideturtle()
-pen.goto(X*0.5, Y*0.75)
-pen.write("0", font=font)
+pen.goto(X*0.5, Y*0.7)
+pen.write("0", align = "center", font=font)
 
 # Initialize player select indices
 ai, bi = 1, 1
@@ -159,6 +158,10 @@ while scoreA < maxScore and scoreB < maxScore:
     if oldScoreTotal != scoreA + scoreB:
         A[2].goto(-X*0.5, Y*0.5)
     oldScoreTotal = scoreA + scoreB
+
+    # Highlight selected turtle
+    aX, aY = A[ai].xcor(), A[ai].ycor()
+    bX, bY = B[bi].xcor(), B[bi].ycor()    
 
     # Make sure all objects update every cycle
     field.update()
@@ -240,14 +243,14 @@ while scoreA < maxScore and scoreB < maxScore:
                     pen.color("orange")
                     pen.penup()
                     pen.hideturtle()
-                    pen.goto(-X*0.5, Y*0.75)
-                    pen.write(scoreA, font=font)
+                    pen.goto(-X*0.5, Y*0.7)
+                    pen.write(scoreA, align = "center", font=font)
                     # Write score for team B
                     pen.color("blue")
                     pen.penup()
                     pen.hideturtle()
-                    pen.goto(X*0.5, Y*0.75)
-                    pen.write(scoreB, font=font)
+                    pen.goto(X*0.5, Y*0.7)
+                    pen.write(scoreB, align = "center", font=font)
 
                 # If no goal is scored, bounce off goal line    
                 else: ball.dx *= -1
