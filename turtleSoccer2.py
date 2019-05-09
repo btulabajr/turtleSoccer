@@ -111,12 +111,14 @@ turtleSpeed = 1
 # Score indexs
 scoreA, scoreB = 0, 0
 
+# Make list with all turtle objects to reduce code length
 allTurtles = A + B
 allTurtles.append(ball)
 
+# Start variable to monitor collisions for ball slowdown
 collisionIndex = 0
 
-# Main game loop
+# MAIN GAME LOOP
 while scoreA < 5 and scoreB < 5:
     # Make sure all objects update every cycle
     field.update()
@@ -216,7 +218,7 @@ while scoreA < 5 and scoreB < 5:
             # Handle collisions between players and ball
             if allTurtles[index].distance(ball) < 2*R:
                 # Give ball max speed
-                ball.speed = 2
+                ball.speed = 5
                 # Reset collision index for ball slowdown
                 collisionIndex = 0
                 xPlayer = allTurtles[index].xcor()
@@ -226,6 +228,7 @@ while scoreA < 5 and scoreB < 5:
                 yDiff = yBall - yPlayer
                 # Get angle between player and ball in radians
                 contactAngle = math.atan2(yDiff, xDiff)
+                print(contactAngle)
                 # Set ball speed based off this contact angle
                 ball.dx = ball.speed*math.sin(contactAngle)
                 ball.dy = ball.speed*math.cos(contactAngle)
@@ -238,8 +241,8 @@ while scoreA < 5 and scoreB < 5:
     # Update collision
     collisionIndex += 1
     # Start to slow down 
-    if collisionIndex > 100 and ball.speed > 0.4:
-        ball.speed -= 0.005
+    if collisionIndex > 20 and ball.speed > 0.4:
+        ball.speed -= 0.01
 
     # Move the ball (eventually implement slowdown too)
     ball.setx(ball.xcor() + ball.dx)
