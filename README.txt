@@ -12,7 +12,7 @@
 	```
 
 	If you found this, you probably found our github but here it is:
-		https://github.com/btulabajr/ME369P-Final-Project
+		https://github.com/btulabajr/turtleSoccer.git
 
 	Download the zip and extract the files. Run turtleSoccer.py.
 
