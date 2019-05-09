@@ -9,7 +9,7 @@ import math
 # This list will hold all currently-pressed keyboard inputs
 keyList = list()
 # Error is commented out to make the .exe
-# error = 'This game accepts alphanumerical keys, namely qweasd and uiojkl.'
+error = 'This game accepts alphanumerical keys, namely qweasd and uiojkl.'
 
 # When keys are pressed
 def on_press(key):
@@ -19,8 +19,7 @@ def on_press(key):
             keyList.append(key.char)
     # Print error statement if not alphanumerical
     except AttributeError:
-        # print(error)
-        pass
+        print(error)
 
 # When keys are released
 def on_release(key):
@@ -35,8 +34,7 @@ def on_release(key):
             if key.char == 'u': bi = playerIncrement(bi, -1)
             if key.char == 'o': bi = playerIncrement(bi, 1)
     except AttributeError:
-        # print(error)
-        pass
+        print(error)
 
 # Blocking keyboard listener, create listener thread
 listener = keyboard.Listener(on_press=on_press, on_release=on_release)
