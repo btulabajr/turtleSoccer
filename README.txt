@@ -17,7 +17,7 @@
 	Download the zip and extract the files. Run turtleSoccer.py.
 
 	On Windows? Use this:
-		************************************************REPLACE WITH LINK*************************************************
+		https://drive.google.com/file/d/1Z7c35_1xtBqDRTxrkcl47N6c2j2mhYTr/view?usp=sharing
 
 ## How to Play
 
